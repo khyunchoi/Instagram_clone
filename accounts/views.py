@@ -54,7 +54,7 @@ def logout(request):
 def profile(request, username):
     profile = get_object_or_404(get_user_model(), username=username)
     is_following = profile.followings.filter(pk=request.user.pk).exists()
-    articles = Article.objects.filter(user_id=profile.id)
+    articles = Article.objects.filter(user_id=profile.id).order_by('-pk')
     context = {
         'profile': profile,
         'is_following': is_following,

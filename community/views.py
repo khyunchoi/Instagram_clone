@@ -3,11 +3,12 @@ from django.views.decorators.http import require_safe, require_POST, require_htt
 from django.contrib.auth.decorators import login_required
 
 from .models import Article, Comment
+from accounts.models import User
 from .forms import ArticleForm, CommentForm
 
 # Create your views here.
 def index(request):
-    articles = Article.objects.all()
+    articles = Article.objects.order_by('-pk')
     form = CommentForm()
     context = {
         'articles': articles,
@@ -58,8 +59,8 @@ def article_delete(request, article_pk):
     if request.user.is_authenticated:
         if request.user == article.user:
             article.delete()
-            return redirect('articles:index')
-    return redirect('articles:detail', article.pk)
+            return redirect('community:index')
+    return redirect('community:detail', article.pk)
 
 
 def article_like(request, article_pk):
@@ -94,3 +95,26 @@ def comment_delete(request, article_pk, comment_pk):
 
 def comment_like(request, article_pk, comment_pk):
     pass
+
+
+def search(request):
+    users = User.objects.all()
+    articles = Article.objects.order_by('-pk')
+    q = request.POST.get('q', "")
+
+    if q[0] == '#':
+        articles = articles.filter(content__contains=q[1:])
+        context = {
+            'articles': articles,
+            'q': q,
+        }
+        return render(request, 'community/search.html', context)
+    elif q:
+        users = users.filter(username__icontains=q)
+        context = {
+            'users': users,
+            'q': q,
+        }
+        return render(request, 'community/search.html', context)
+    else:
+        return render(request, 'community/search.html')

@@ -9,6 +9,7 @@
   {% endif %}
   {{ article.content }}
 
+
   <form action="{% url 'community:comment_create' article.pk %}" method="POST">
     {% csrf_token %}  
     {{ form }}

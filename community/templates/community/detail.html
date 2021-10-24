@@ -6,6 +6,11 @@
     <img src="{{ article.image.url }}" alt="이미지">
   {% endif %}
   {{ article.content }}
+  
+  <form action="{% url 'community:article_delete' article.pk %}" method="POST">
+    {% csrf_token %}
+    <button>삭제</button>
+  </form>
 
   <form action="{% url 'community:article_like' article.pk %}" method="POST">
     {% csrf_token %}
