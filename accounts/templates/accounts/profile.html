@@ -2,6 +2,9 @@
 
 {% block content %}
 <h1>{{ profile.username }}</h1>
+{% if profile.image %}
+  <img src="{{ profile.image.url }}" alt="프사">
+{% endif %}
 <h2>Followers: {{ profile.followers.count }}</h2>
 <h2>Followings: {{ profile.followings.count }}</h2>
 

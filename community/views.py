@@ -60,7 +60,7 @@ def article_delete(request, article_pk):
         if request.user == article.user:
             article.delete()
             return redirect('community:index')
-    return redirect('community:detail', article.pk)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 def article_like(request, article_pk):
@@ -69,7 +69,7 @@ def article_like(request, article_pk):
         article.like_users.remove(request.user)
     else:
         article.like_users.add(request.user)
-    return redirect('community:detail', article.pk)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 def comment_create(request, article_pk):
@@ -80,7 +80,7 @@ def comment_create(request, article_pk):
         comment.article = article
         comment.user = request.user
         comment.save()
-    return redirect('community:detail', article.pk)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
@@ -90,7 +90,7 @@ def comment_delete(request, article_pk, comment_pk):
     comment = get_object_or_404(Comment, pk=comment_pk)
     if request.user == comment.user:
         comment.delete()
-    return redirect('community:detail', article.pk)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 def comment_like(request, article_pk, comment_pk):
